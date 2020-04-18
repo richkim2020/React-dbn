@@ -7,6 +7,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell'; 
 import { withStyles } from '@material-ui/core/styles';
+//import bodyParser from 'body-parser';
 
 // import Clock from './Example/clock';
 // import ApiExample from './Example/ApiExample';
@@ -22,33 +23,49 @@ const styles = theme => ({
     minWidth: 1080
   }
 })
-const customers = [
-{
-  'id': 1,
-  'image': 'https://placeimg.com/64/64/1',
-  'name': '나동빈',
-  'birthday': '9992',
-  'gender': '남자',
-  'job': '대학생'
-},
-{
-  'id': 2,
-  'image': 'https://placeimg.com/64/64/2',
-  'name': '나동빈2',
-  'birthday': '9992',
-  'gender': '남자',
-  'job': '대학생2'
-},
-{
-  'id': 3,
-  'image': 'https://placeimg.com/64/64/3',
-  'name': '나동빈3',
-  'birthday': '9992',
-  'gender': '남자',
-  'job': '대학생3'
-}
-]
+// const customers = [
+// {
+//   'id': 1,
+//   'image': 'https://placeimg.com/64/64/1',
+//   'name': '나동빈',
+//   'birthday': '9992',
+//   'gender': '남자',
+//   'job': '대학생'
+// },
+// {
+//   'id': 2,
+//   'image': 'https://placeimg.com/64/64/2',
+//   'name': '나동빈2',
+//   'birthday': '9992',
+//   'gender': '남자',
+//   'job': '대학생2'
+// },
+// {
+//   'id': 3,
+//   'image': 'https://placeimg.com/64/64/3',
+//   'name': '나동빈3',
+//   'birthday': '9992',
+//   'gender': '남자',
+//   'job': '대학생3'
+// }
+// ]
 class App extends Component{
+
+  state = {
+    customers: ""
+  }
+
+  componentDidMount(){  // component가 준비 완료된상태
+    this.callApi()
+      .then(res => this.setState({customers: res}))
+      .catch(err => console.log(err));
+  }
+
+  callApi = async () => {
+    const response = await fetch('/api/customers');
+    const boby = await response.json();
+    return boby;
+  }
   render(){
      const { classes } = this.props;
   return (
@@ -56,7 +73,7 @@ class App extends Component{
      <Table className={classes.table}>
        <TableHead>
          <TableRow>
-           <TableCell>번호</TableCell>ㅜㅐㅇㄷ
+           <TableCell>번호</TableCell>
            <TableCell>이미지</TableCell>
            <TableCell>이름</TableCell>
            <TableCell>생년월일</TableCell>
@@ -67,7 +84,7 @@ class App extends Component{
        <TableBody>
        {
         // customers.map(c =>{})  한 줄로 사용할수 았음
-        customers.map(c => {  // 새로운 배열을 합쳐서 만들어준다
+        this.state.customers ? this.state.customers.map(c => {  // 새로운 배열을 합쳐서 만들어준다
           return (
             <Customer
             key={c.id}    // map 함수 사용시 항시 key값을 넣어주어야 한다
@@ -78,8 +95,8 @@ class App extends Component{
             gender={c.gender}
             job={c.job}
             />
-          )
-        })
+          );
+        }) : ""
       }
        </TableBody>
      </Table>
